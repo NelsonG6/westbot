@@ -1,1 +1,1 @@
-``text`` 
+Welcome to the documentation for WestBot.
