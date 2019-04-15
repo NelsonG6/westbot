@@ -7,25 +7,28 @@ using System.Collections.Generic;
 
 namespace Westbot
 {
+    //The round object for the tournament. Stores a group of games that would be represented as being along a single column,
+    //and within a single side of the bracket, either winners or losers.
     public class Round
     {
-        //This is which order the round is in.
+        //This is which order the round is in. This is only relative to the winner or losers bracket.
         private int Round_number;
 
         //This is the name for the round, such as "winners finals"
         private string Round_name;
 
         //Determines if this round is in winners bracket or not
-        private bool Winners;
+        private bool WinnersOrLosersBracket;
 
-        //This is a list of all the games in this round. May or may not be both winners and losers bracket games.
+        //This is a list of all the games in this round. Should only be games within the same bracket level, either all winners or losers.
         private List<Game> Games_in_round;
 
+        //Round objects are always created prior to games
         public Round(string name_set, bool winners_set)
         {
-            Round_number = 1;
+            Round_number = 0;
             Round_name = name_set;
-            Winners = winners_set;
+            WinnersOrLosersBracket = winners_set;
         }
 
         public void Increase_round_count()
@@ -36,6 +39,7 @@ namespace Westbot
 
     //This class is for allowing each player to store a record of the games they've played, with an added variable for 
     //ordering the games.
+    //Players will store a list of GameRecords, one for each completed game.
     public class GameRecord
     {
         //Allows for an index when the GameRecords are inserted into a list
@@ -43,9 +47,14 @@ namespace Westbot
         private Game Game_played;
     }
 
+    //Participants are the players in the tournament.
     public class Participant
     {
+
         private string Name;
+
+        //ID is generated in the order the player is added to the bracket,
+        //But this has no bearing on any functionality.
         private int ID;
 
         //The players game history so far; will also include the current game, prior to it being finished.
@@ -53,6 +62,11 @@ namespace Westbot
 
         private int Wins;
         private int Losses;
+
+        //The seed value for the player.
+        //This is a reflection of the player's skill.
+        //This is used to rank each player, and seeds are given in ascending order, starting with 1.
+        //The list of players in the tournament is ordered by seed.
         private int Seed;
 
         public Participant()
@@ -66,6 +80,7 @@ namespace Westbot
         }
     }
 
+    //This is a game within a round.
     public class Game
     {
         //The players in this game
@@ -78,11 +93,8 @@ namespace Westbot
         //This game's number in terms of order games should be played, to give maximum time between games for players
         private int WholeTournamentGameNumber;
 
-        //The game's round number
-        private int RoundNumber;
-
-        //If this game is in winner's backet. False means losers bracket.
-        private bool Winner;
+        //The round this game belongs to
+        private Round ContainingRound;
 
         //The game the winner of this match advances to
         private Game Winner_Advance;
@@ -96,15 +108,18 @@ namespace Westbot
         //Source 2 will be the game from winners bracket for losers bracket matches, if applicable
         private Game Source_2;
 
-        public Game()
+        //Games will be created within rounds.
+        //Each round will provide itself to the game in the constructor, so the game can point back to it.
+        public Game(Round containing_round)
         {
             Player_one = new Participant();
             Player_two = new Participant();
             GameNumberWithinRound = 0;
-
+            ContainingRound = containing_round;
         }
     }
 
+    //The object that stores the entire tournament.
     public class Tournament
     {
         //List of players

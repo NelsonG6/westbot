@@ -25,7 +25,8 @@ namespace Westbot.Services
         {
             //Calling getchannelname with "user join" will get the name of this local channel's user join channel
             await CurrentConfiguration.GetChannel("General").SendMessageAsync($"Welcome, <@{user.Id}>!");
-            await CurrentConfiguration.GetChannel("User Join").SendMessageAsync(user.Mention + " has joined.");
+            if(CurrentConfiguration.GetChannel("User Join") != null)
+                await CurrentConfiguration.GetChannel("User Join").SendMessageAsync(user.Mention + " has joined.");
         }
 
         public async Task InstallCommandsAsync()

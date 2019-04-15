@@ -80,7 +80,10 @@ namespace Westbot
             foreach (ChannelData current in ChannelDataList)
             {
                 if (current.SearchKey.ToLower() == description.ToLower())
-                    return current.ServerSpecificName;
+                    if (current.ServerSpecificName == "none")
+                        return null;
+                    else
+                        return current.ServerSpecificName;
             }
             //no match was found
             return "";
