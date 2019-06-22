@@ -1,0 +1,16 @@
+double elim bracket notes
+
+-will need a function to renumber rounds; will be giving them numbers that increase from the wrong direction at first
+
+-not seeing a need to combine rounds from winners and losers
+
+-will need a seed command
+.seed player1 8
+
+going to bed working on the tournament initialization
+deciding against storing a "head" of the tournament
+grand finals reset will be winners_rounds.size index
+grand finals will be winners_rounds.size - 1
+winners finals will be winners_rounds.size - 2
+
+-form bracket with 
