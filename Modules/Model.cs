@@ -16,7 +16,7 @@ namespace experiment.SQLite
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {
-                optionsBuilder.UseSqlite("Data Source=blogging.db");
+                //optionsBuilder.UseSqlite("Data Source=blogging.db");
             }
         }
 
