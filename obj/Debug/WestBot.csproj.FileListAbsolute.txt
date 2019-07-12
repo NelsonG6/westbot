@@ -161,3 +161,8 @@ D:\Repositories\WestBot\bin\Debug\System.Numerics.Vectors.xml
 D:\Repositories\WestBot\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 D:\Repositories\WestBot\bin\Debug\System.Threading.Tasks.Extensions.xml
 D:\Repositories\WestBot\obj\Debug\WestBot.csproj.CopyComplete
+D:\Repositories\westbot\bin\Debug\BouncyCastle.Crypto.dll
+D:\Repositories\westbot\bin\Debug\Google.Protobuf.dll
+D:\Repositories\westbot\bin\Debug\MySql.Data.dll
+D:\Repositories\westbot\bin\Debug\Google.Protobuf.xml
+D:\Repositories\westbot\bin\Debug\MySql.Data.xml

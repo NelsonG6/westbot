@@ -1,41 +1,76 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 
-namespace experiment.SQLite
+
+
+
+namespace Westbot
 {
-    class Model
+    public class DBConnection
     {
-        public class BloggingContext : DbContext
+        private DBConnection()
         {
-            public DbSet<Blog> Blogs { get; set; }
-            public DbSet<Post> Posts { get; set; }
+        }
 
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        private string databaseName = string.Empty;
+        public string DatabaseName
+        {
+            get { return databaseName; }
+            set { databaseName = value; }
+        }
+
+        public string Password { get; set; }
+        private MySqlConnection connection = null;
+        public MySqlConnection Connection
+        {
+            get { return connection; }
+        }
+
+        private static DBConnection _instance = null;
+        public static DBConnection Instance()
+        {
+            if (_instance == null)
+                _instance = new DBConnection();
+            return _instance;
+        }
+
+        public bool IsConnect()
+        {
+            if (Connection == null)
             {
-                //optionsBuilder.UseSqlite("Data Source=blogging.db");
+                if (String.IsNullOrEmpty(databaseName))
+                    return false;
+                string connstring = string.Format("Server=localhost; database={0}; UID=root; password=GoodGames!", databaseName);
+                connection = new MySqlConnection(connstring);
+                connection.Open();
             }
+
+            return true;
         }
 
-        public class Blog
+        public void Close()
         {
-            public int BlogId { get; set; }
-            public string Url { get; set; }
-
-            public ICollection<Post> Posts { get; set; }
+            connection.Close();
         }
 
-        public class Post
+        public void Connect()
         {
-            public int PostId { get; set; }
-            public string Title { get; set; }
-            public string Content { get; set; }
-
-            public int BlogId { get; set; }
-            public Blog Blog { get; set; }
+            var dbCon = DBConnection.Instance();
+            dbCon.DatabaseName = "Test";
+            if (dbCon.IsConnect())
+            {
+                //suppose col0 and col1 are defined as VARCHAR in the DB
+                string query = "SELECT main_capcom_id,discord_id FROM server_users";
+                var cmd = new MySqlCommand(query, dbCon.Connection);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string someStringFromColumnZero = reader.GetString(0);
+                    string someStringFromColumnOne = reader.GetString(1);
+                    Console.WriteLine(someStringFromColumnZero + "," + someStringFromColumnOne);
+                }
+                dbCon.Close();
+            }
         }
     }
 }
