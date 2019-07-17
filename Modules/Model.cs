@@ -8,23 +8,14 @@ namespace Westbot
 {
     public class DBConnection
     {
-        private DBConnection()
+        public DBConnection()
         {
         }
-
-        private string databaseName = string.Empty;
-        public string DatabaseName
-        {
-            get { return databaseName; }
-            set { databaseName = value; }
-        }
+        public string DatabaseName { get; set; } = string.Empty;
 
         public string Password { get; set; }
-        private MySqlConnection connection = null;
-        public MySqlConnection Connection
-        {
-            get { return connection; }
-        }
+        public MySqlConnection Connection { get; private set; } = null;
+        public string DatabaseName1 { get => DatabaseName; set => DatabaseName = value; }
 
         private static DBConnection _instance = null;
         public static DBConnection Instance()
@@ -38,11 +29,11 @@ namespace Westbot
         {
             if (Connection == null)
             {
-                if (String.IsNullOrEmpty(databaseName))
+                if (string.IsNullOrEmpty(DatabaseName))
                     return false;
-                string connstring = string.Format("Server=localhost; database={0}; UID=root; password=GoodGames!", databaseName);
-                connection = new MySqlConnection(connstring);
-                connection.Open();
+                string connstring = string.Format("Server=localhost; database={0}; UID=root; password=GoodGames!", DatabaseName);
+                Connection = new MySqlConnection(connstring);
+                Connection.Open();
             }
 
             return true;
@@ -50,7 +41,7 @@ namespace Westbot
 
         public void Close()
         {
-            connection.Close();
+            Connection.Close();
         }
 
         public void Connect()
@@ -59,7 +50,6 @@ namespace Westbot
             dbCon.DatabaseName = "Test";
             if (dbCon.IsConnect())
             {
-                //suppose col0 and col1 are defined as VARCHAR in the DB
                 string query = "SELECT main_capcom_id,discord_id FROM server_users";
                 var cmd = new MySqlCommand(query, dbCon.Connection);
                 var reader = cmd.ExecuteReader();

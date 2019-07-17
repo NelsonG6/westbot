@@ -5,7 +5,7 @@ using System.Linq;
 using System;
 using Discord;
 
-namespace Westbot.Services
+namespace Westbot
 {
     [Name("LFG commands")]
     public class LookingForGamesModule : ModuleBase<SocketCommandContext>

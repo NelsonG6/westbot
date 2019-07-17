@@ -213,6 +213,7 @@
     <Compile Include="Modules\PostsModule.cs" />
     <Compile Include="Modules\randomgames.cs" />
     <Compile Include="Modules\RolesModule.cs" />
+    <Compile Include="Modules\sqlconnection.cs" />
     <Compile Include="Modules\TournamentModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CommandHandler.cs" />
