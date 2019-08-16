@@ -208,9 +208,9 @@
     <Compile Include="Modules\HelpModule.cs" />
     <Compile Include="Modules\LookingForGamesModule.cs" />
     <Compile Include="Modules\MemesModule.cs" />
-    <Compile Include="Modules\Model.cs" />
     <Compile Include="Modules\ModeratorModule.cs" />
     <Compile Include="Modules\PostsModule.cs" />
+    <Compile Include="Modules\PrivateChannel.cs" />
     <Compile Include="Modules\randomgames.cs" />
     <Compile Include="Modules\RolesModule.cs" />
     <Compile Include="Modules\sqlconnection.cs" />

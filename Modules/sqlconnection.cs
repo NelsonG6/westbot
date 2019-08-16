@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Westbot;
@@ -24,7 +25,9 @@ namespace WestBot.Modules
                 {
                     await Context.Channel.SendMessageAsync("Connected");
 
-                    string queryString = "SELECT display_name FROM dbo.channel_data;";
+                    string queryString = "SELECT discord_id FROM dbo.user_table WHERE discord_id =";
+                    queryString += Context.User.Id.ToString();
+                    queryString += ";";
 
                     SqlCommand command = new SqlCommand(queryString, conn);
                     conn.Open();
@@ -68,32 +71,31 @@ namespace WestBot.Modules
             {
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    await Context.Channel.SendMessageAsync("Connected");
-
                     var ID = Context.User.Id;
 
-                    int result = -1;
-
-                    SqlCommand command = new SqlCommand("user_id", conn);
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
+                    SqlCommand command = new SqlCommand("InsertNewUser", conn);
+                    SqlParameter returnValue = new SqlParameter("returnVal", SqlDbType.Int);
+                    returnValue.Direction = ParameterDirection.ReturnValue;
+                    command.Parameters.Add(returnValue);
+                    command.Parameters.Add(new SqlParameter("@insert_ID", (Int64)Context.User.Id));
+                    command.Parameters.Add(new SqlParameter("@insert_display_name", Context.User.Username.ToString()));
+                    command.Parameters.Add(new SqlParameter("@insert_current_server", Context.Guild.Id.ToString()));
+                    command.CommandType = CommandType.StoredProcedure;
+                    //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
 
                     conn.Open();
 
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        result = (int)reader[0];
-                    }
+                    command.ExecuteNonQuery();
 
-                    if(result == -1)
-                    {
-                        await Context.Channel.SendMessageAsync("ID not found in the database.");
-                    }
-                    else
-                    {
-                        await Context.Channel.SendMessageAsync("ID found in the database.");
+                    conn.Close();
 
-                    }
+                    await Context.Channel.SendMessageAsync("User updated for this server.");
+
+                    
+
+                   
+
+
                     /*
                      *                         while (reader.Read())
                      *  {
