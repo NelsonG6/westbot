@@ -146,7 +146,6 @@ namespace Westbot
             }
 
         }
-
     }
 
     [Name("tournament commands")]

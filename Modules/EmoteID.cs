@@ -1,22 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord.Commands;
 using Westbot.Preconditions;
-using System.IO;
-using Newtonsoft.Json;
 
-using Discord;
-
-
-using Discord.WebSocket;
-using System.Reflection;
-
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Westbot.Services
+namespace Westbot
 {
     [Name("Debugging")]
 

@@ -3,11 +3,9 @@ using Westbot.Preconditions;
 using System.Threading.Tasks;
 using System;
 using System.IO;
-using Newtonsoft.Json;
+using MySql.Data.MySqlClient;
 
-using System.Collections.Generic;
-
-namespace Westbot.Services
+namespace Westbot
 {
     [Name("Memes")]
 
@@ -490,13 +488,48 @@ namespace Westbot.Services
 
         [Command("what"), Alias("What")]
         [MinPermissions(AccessLevel.User)]
-        public async Task<RuntimeResult> What([Remainder]String arg = "")
+        public async Task<RuntimeResult> What([Remainder]string arg = "")
         {
             var filename = "what.gif";
             await Context.Channel.SendFileAsync(Path.Combine(AppContext.BaseDirectory, "Uploads", filename));
             return WestbotCommandResult.AcceptNoReact();
         }
-    }
+        [Command("testdb"), Alias("testdatabase")]
+        [Remarks("testingthedatabase")]
+        [MinPermissions(AccessLevel.User)]
+        public async Task<RuntimeResult> TestDB()
+        {
+            string connStr = "server=localhost;user=root;database=Test;port=3306;password=GoodGames!";
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                Console.WriteLine("Connecting to MySQL...");
+                conn.Open();
 
+                string sql = "SELECT discord_id FROM server_sers";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    Console.WriteLine(rdr[0] + " -- " + rdr[1]);
+                }
+                rdr.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            conn.Close();
+            Console.WriteLine("Done.");
+
+            await Context.Channel.SendMessageAsync("hello");
+            return WestbotCommandResult.AcceptNoReact();
+        }
+
+        
+    }
+    
     //add worm
 }

@@ -3,7 +3,6 @@ using Discord.Commands;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Westbot.Services
 {
     public class HelpModule : ModuleBase<SocketCommandContext>
