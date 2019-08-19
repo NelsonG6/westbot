@@ -23,7 +23,7 @@ namespace WestBot.Modules
 
             //If he does not have an associated channel ID, create a channel for him, and add that channel ID to the database.
 
-            string connString = "server=(local);Data Source=RIGHTPC\\SQLexpress;Initial Catalog=Westbot;Trusted_Connection = True;";
+            string connString = "server=(local);Data Source=WestbotHost2\\SQLEXPRESS;Initial Catalog=Westbot;Trusted_Connection = True;";
 
             try
             {

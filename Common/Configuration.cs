@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿//using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +7,7 @@ using Discord.Commands;
 using Discord;
 using Discord.WebSocket;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Westbot
 {
