@@ -1,0 +1,285 @@
+[
+  {
+    "ConfigurationName": "universal",
+    "Owners": [ 280267738486800400 ],
+    "Prefix": ".",
+    "ErrorReactions": [
+      {
+        "Name": "👀",
+        "Description": "eyes"
+      },
+      {
+        "Name": "👎🏼",
+        "Description": "thumbsdown1"
+      },
+      {
+        "Name": "👎🏼",
+        "Description": "thumbsdown2"
+      },
+      {
+        "Name": "👎🏾",
+        "Description": "thumbsdown3"
+      },
+      {
+        "Name": "👎🏽",
+        "Description": "thumbsdown4"
+      },
+      {
+        "Name": "👎🏿",
+        "Description": "thumbsdown5"
+      },
+      {
+        "Name": "🖕",
+        "Description": "middlefinger"
+      },
+      {
+        "Name": "🙅",
+        "Description": "nogood"
+      },
+      {
+        "Name": "😒",
+        "Description": "unamused"
+      },
+      {
+        "Name": "🤢",
+        "Description": "nauseous"
+      },
+      {
+        "Name": "⚰️",
+        "Description": "coffin"
+      },
+      {
+        "Name": "🙈",
+        "Description": "seenoevil"
+      }
+    ],
+    "AcceptReactions": [
+      {
+        "Name": "👌",
+        "Description": "okhand"
+      },
+      {
+        "Name": "🙏🏿",
+        "Description": "pray"
+      },
+      {
+        "Name": "👍",
+        "Description": "thumbsup"
+      },
+      {
+        "Name": "🥇",
+        "Description": "1stplacemedal"
+      }
+    ],
+    "ChannelDataList": [
+      {
+        "SearchKey": "General",
+        "ServerSpecificName": "💬general"
+      }
+    ]
+  },
+
+  {
+    "ConfigurationName": "default",
+    "Prefix": "~",
+    "Token": "NTExNjgzMjk0MzQ2MzQ2NTE2.DsufXw.b8Zy0VtDK4tf0YN5jHM58L_YXjE",
+    "ErrorReactions": [
+      { "Name": "wack" },
+      { "Name": "wut" },
+      { "Name": "no" },
+      { "Name": "toastman" },
+      { "Name": "hankhill" },
+      { "Name": "evomindblown" },
+      { "Name": "obamawhew" },
+      { "Name": "noatmosphere" },
+      { "Name": "mjcry" },
+      { "Name": "frysquint" },
+      { "Name": "toastman" },
+      { "Name": "evomindblown" }
+    ],
+    "AcceptReactions": [
+      { "Name": "terminator" },
+      { "Name": "kappa" },
+      { "Name": "grinch" },
+      { "Name": "coolstorybob" },
+      { "Name": "illuminati" },
+      { "Name": "yes" },
+      { "Name": "yesword" },
+      { "Name": "BlessRNG" },
+      { "Name": "pogchamp" },
+      { "Name": "lul" },
+      { "Name": "morpheus" },
+      { "Name": "rtsd" },
+      { "Name": "freerealestate" },
+      { "Name": "go07x" },
+      { "Name": "daigasm" },
+      { "Name": "doge" },
+      { "Name": "worm" },
+      { "Name": "jebaited" }
+    ],
+    "ChannelDataList": [
+      {
+        "SearchKey": "Looking for games",
+        "ServerSpecificName": "🔎looking_for_games"
+      },
+      {
+        "SearchKey": "User join",
+        "ServerSpecificName": "new_warriors"
+      }
+    ]
+  },
+
+  {
+    "ConfigurationName": "westbot",
+    "Token": "Mjk0Njg2NTg4MDE1NzM4ODgw.DszBBQ.5beDaiINqL_q7_TMsumdenLEntU",
+    "ErrorReactions": [
+      { "Name": "wack" },
+      { "Name": "wut" },
+      { "Name": "no" },
+      { "Name": "toastman" },
+      { "Name": "hankhill" },
+      { "Name": "evomindblown" },
+      { "Name": "obamawhew" },
+      { "Name": "noatmosphere" },
+      { "Name": "mjcry" },
+      { "Name": "frysquint" },
+      { "Name": "toastman" },
+      { "Name": "evomindblown" }
+    ],
+    "AcceptReactions": [
+      { "Name": "terminator" },
+      { "Name": "kappa" },
+      { "Name": "grinch" },
+      { "Name": "coolstorybob" },
+      { "Name": "illuminati" },
+      { "Name": "yes" },
+      { "Name": "yesword" },
+      { "Name": "BlessRNG" },
+      { "Name": "pogchamp" },
+      { "Name": "lul" },
+      { "Name": "morpheus" },
+      { "Name": "rtsd" },
+      { "Name": "freerealestate" },
+      { "Name": "go07x" },
+      { "Name": "daigasm" },
+      { "Name": "doge" },
+      { "Name": "worm" },
+      { "Name": "jebaited" }
+    ],
+    "ChannelDataList": [
+      {
+        "SearchKey": "Looking for games",
+        "ServerSpecificName": "🔎looking_for_games"
+      },
+      {
+        "SearchKey": "User join",
+        "ServerSpecificName": "new_warriors"
+      }
+    ]
+  },
+
+  {
+    "ConfigurationName": "birdbot",
+    "Token": "NTAyMjcwMDM5OTUzNTA2MzE0.Dq67QQ.ESdF4l4iTW2g8Qvg1m8L_oTSgls",
+    "ErrorReactions": [
+      { "Name": "wut" },
+      { "Name": "toastman" },
+      { "Name": "noatmosphere" },
+      { "Name": "mjcry" },
+      { "Name": "frysquint" }
+    ],
+    "AcceptReactions": [
+      { "Name": "dappa" },
+      { "Name": "alfa" },
+      { "Name": "sciencerules" },
+      { "Name": "donutz" },
+      { "Name": "datstare" },
+      { "Name": "whatsdat" },
+      { "Name": "arm1" },
+      { "Name": "arm2" },
+      { "Name": "bird1" },
+      { "Name": "prrog" },
+      { "Name": "bird2" },
+      { "Name": "kbird" },
+      { "Name": "poongko" },
+      { "Name": "bobross" },
+      { "Name": "floe" },
+      { "Name": "idk" },
+      { "Name": "punkteef" },
+      { "Name": "heartache" },
+      { "Name": "kreygasm" },
+      { "Name": "daigasm" },
+      { "Name": "nomb" },
+      { "Name": "bullhorn" },
+      { "Name": "smooth" },
+      { "Name": "wot" },
+      { "Name": "gg" },
+      { "Name": "notlikethis" },
+      { "Name": "heyguys" },
+      { "Name": "askme" },
+      { "Name": "goot3x" },
+      { "Name": "pogchamp" },
+      { "Name": "rtsd" },
+      { "Name": "wut" },
+      { "Name": "evomindblown" },
+      { "Name": "lul" },
+      { "Name": "noatmosphere" },
+      { "Name": "magwow" },
+      { "Name": "grinch" },
+      { "Name": "doge" },
+      { "Name": "obama" },
+      { "Name": "hankhill" },
+      { "Name": "bananaman" },
+      { "Name": "illuminati" },
+      { "Name": "toastman" },
+      { "Name": "stare" },
+      { "Name": "worm" },
+      { "Name": "galaxybrain" },
+      { "Name": "punk" }
+    ],
+    "ChannelDataList": [
+      {
+        "SearchKey": "Looking for games",
+        "ServerSpecificName": "battle_request"
+      },
+      {
+        "SearchKey": "User join",
+        "ServerSpecificName": "welcome_to_birdie"
+      }
+    ]
+  },
+
+  {
+    "ConfigurationName": "beebot",
+    "Token": "NTAyMzk2NjM0NTQyNjM3MDU5.DqnXpA.IJ7tM4norVy5kBKeb6afCA4od9o"
+  },
+
+  {
+    "ConfigurationName": "tapbot",
+    "Token": "NTAyNjI4ODQxMTkwMzI2Mjky.Dqqtpw.j8ZwK1GX2kQKAvBG0anu5ffp9D4",
+    "ChannelDataList": [
+      {
+        "SearchKey": "Looking for games",
+        "ServerSpecificName": "LFG"
+      },
+      {
+        "SearchKey": "User join",
+        "ServerSpecificName": "New_Tappers"
+      }
+    ]
+
+  },
+
+  {
+    "ConfigurationName": "gemsbot",
+    "Token": "NTMzOTQ3MzI1NDkyNzU2NTAx.D2ZECQ.TyOePa_GARkRmL4fFVs1xuLiqUk",
+    "ChannelDataList": [
+      {
+        "SearchKey": "User join",
+        "ServerSpecificName": "general"
+      }
+    ]
+
+  }
+
+]
