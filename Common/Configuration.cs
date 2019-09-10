@@ -7,9 +7,16 @@ using Discord.Commands;
 using Discord;
 using Discord.WebSocket;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
+using System.Data;
+using WestBot;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Westbot
 {
+    //Move this config functionality to the sql database
+
     public class Reaction
     { //Contains emotes and emojis; if description is equal to "emote", then this is an emote; otherwise it indicates this is an emoji.
         public string Name { get; set; }
@@ -166,31 +173,79 @@ namespace Westbot
 
         async public static Task GenerateReaction(ICommandContext Context, bool error_state)
         {
-            List<Reaction> currentReactionList = new List<Reaction>();
-
-            if (error_state)
-                currentReactionList = ErrorReactions;
-            else
-                currentReactionList = AcceptReactions;
-
-            Random rnd = new Random();
-
-            //ProcessError returns a ReactionCollection, which is where GenerateReaction should be called from.
-            //So we don't need this line anymore.
-            //ReactionCollection currentReactionCollection = ProcessError(error_react);
-
-            //Get our randomly selected reactoin
-            Reaction currentReaction = currentReactionList.ElementAt(rnd.Next(0, currentReactionList.Count - 1));
-
-            if (currentReaction.Description.ToLower() == "emote")
-            { //emote
-                IEmote emote_to_add = Context.Guild.Emotes.First(e => e.Name == currentReaction.Name);
-                await Context.Message.AddReactionAsync(emote_to_add);
-            }
-            else // emoji
+            try
             {
-                Emoji emoji_to_add = new Emoji(currentReaction.Name);
-                await Context.Message.AddReactionAsync(emoji_to_add);
+                using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
+                {
+                    string reaction_type;
+                    if (!error_state)
+                        reaction_type = "Accept";
+                    else
+                        reaction_type = "Error";
+
+
+                    SqlCommand command = new SqlCommand("EmoteOrEmoji", conn);
+
+                    SqlParameter newparam = new SqlParameter("@input_reaction_type", reaction_type);
+
+                    command.Parameters.Add(newparam);
+                    //command.Parameters.Add(new SqlParameter("@input_reaction_type", SqlDbType.BigInt));
+
+                    command.Parameters.Add(new SqlParameter("@input_server_id", (Int64)Context.Guild.Id));
+                    SqlParameter returnValue = new SqlParameter("result", SqlDbType.Int);
+                    returnValue.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(returnValue);
+
+                    conn.Open();
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.ExecuteNonQuery();
+
+                    if ((int)returnValue.Value == 0)
+                    {   //Emojis
+                        command = new SqlCommand("GetRandomEmoji", conn);
+                        returnValue = new SqlParameter("return_value", SqlDbType.NVarChar);
+                        returnValue.Size = 50;
+                        returnValue.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(returnValue);
+                        command.Parameters.Add(new SqlParameter("@input_reaction_type", reaction_type));
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.ExecuteNonQuery();
+
+                        /*string str = (string)returnValue.Value;
+                        string emoji = string.Join("", (from Match m in Regex.Matches(str, @"\S{4}")
+                                                        select (char)int.Parse(m.Value, NumberStyles.HexNumber)).ToArray());
+                        */
+                        Emoji emoji_to_add = new Emoji((string)returnValue.Value);
+                        await Context.Message.AddReactionAsync(emoji_to_add);
+
+                    }
+                    else
+                    {   //emotes
+                        command = new SqlCommand("GetRandomEmote", conn);
+                        returnValue = new SqlParameter("return_emote_id", SqlDbType.BigInt);
+                        returnValue.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(returnValue);
+                        command.Parameters.Add(new SqlParameter("@input_reaction_type", reaction_type));
+                        command.Parameters.Add(new SqlParameter("@input_server_id", (Int64)Context.Guild.Id));
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.ExecuteNonQuery();
+
+                        long result2 = (long)returnValue.Value;
+                        UInt64 result = (UInt64)result2;
+
+                        IEmote emote_to_add = Context.Guild.Emotes.FirstOrDefault(x => x.Id == result);
+                        //var emote_to_add = Context.Guild.GetEmoteAsync(result);
+                        
+                        await Context.Message.AddReactionAsync((IEmote)emote_to_add);                       
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                await Context.Channel.SendMessageAsync("Exception: " + ex.Message);
             }
         }
     }

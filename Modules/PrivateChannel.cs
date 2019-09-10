@@ -2,7 +2,6 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 using Westbot;
 using Westbot.Preconditions;
@@ -22,12 +21,10 @@ namespace WestBot.Modules
             //See if every user has a channel ID already, and for those that don't, create a channel 
 
             //If he does not have an associated channel ID, create a channel for him, and add that channel ID to the database.
-
-            string connString = "server=(local);Data Source=RIGHTPC\\SQLexpress;Initial Catalog=Westbot;Trusted_Connection = True;";
-
+        
             try
             {
-                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
                 {
                     SqlCommand command = new SqlCommand("CheckPrivateChannel", conn);
                     SqlParameter returnValue = new SqlParameter("returnVal", SqlDbType.Int);
@@ -86,7 +83,6 @@ namespace WestBot.Modules
                         command.Parameters.Add(new SqlParameter("@insert_discord_id", (Int64)Context.User.Id));
                         command.Parameters.Add(new SqlParameter("@insert_server_id", Context.Guild.Id.ToString()));
                         command.Parameters.Add(new SqlParameter("@insert_channel_id", (Int64)id));
-                        command.Parameters.Add(new SqlParameter("@insert_alias", Context.User.Username.ToString()));
                         command.CommandType = CommandType.StoredProcedure;
                         command.ExecuteNonQuery();
 
