@@ -10,7 +10,7 @@ namespace Westbot
     {
         [Command("showemote"), Alias("show emote", "getemote", "get emote")]
         [Remarks("Gets an emote and outputs the string")]
-        [MinPermissions(AccessLevel.ServerMod)]
+        [MinPermissions(AccessLevel.User)]
         public async Task<RuntimeResult> ShowEmote([Remainder]string arg = "")
         {
             if (string.IsNullOrEmpty(arg))

@@ -204,6 +204,7 @@
     <Compile Include="Common\Program.cs" />
     <Compile Include="Modules\AcceptState.cs" />
     <Compile Include="Modules\commandResult.cs" />
+    <Compile Include="Modules\ConnString.cs" />
     <Compile Include="Modules\EmoteID.cs" />
     <Compile Include="Modules\HelpModule.cs" />
     <Compile Include="Modules\LookingForGamesModule.cs" />
@@ -213,7 +214,6 @@
     <Compile Include="Modules\PrivateChannel.cs" />
     <Compile Include="Modules\randomgames.cs" />
     <Compile Include="Modules\RolesModule.cs" />
-    <Compile Include="Modules\sqlconnection.cs" />
     <Compile Include="Modules\TournamentModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CommandHandler.cs" />

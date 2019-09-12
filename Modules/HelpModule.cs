@@ -17,7 +17,7 @@ namespace Westbot.Services
         [Command("help")]
         public async Task HelpAsync()
         {
-            char prefix = CurrentConfiguration.Prefix;
+            char prefix = BotConfiguration.Prefix;
             var builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),
@@ -59,7 +59,7 @@ namespace Westbot.Services
                 return;
             }
 
-            char prefix = CurrentConfiguration.Prefix;
+            char prefix = BotConfiguration.Prefix;
             var builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),

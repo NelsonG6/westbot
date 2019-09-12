@@ -48,6 +48,7 @@ namespace Westbot.Modules
                     returnValue.Direction = ParameterDirection.Output;
                     command.Parameters.Add(returnValue);
                     command.Parameters.Add(new SqlParameter("@serverID", Context.Guild.Id.ToString()));
+                    command.Parameters.Add(new SqlParameter("@target_channel", "Stream"));
 
                     command.CommandType = CommandType.StoredProcedure;
                     //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));

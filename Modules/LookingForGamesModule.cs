@@ -35,20 +35,26 @@ namespace Westbot
 
         public async Task Lfg_function()
         {
-            var channel = CurrentConfiguration.GetChannel("looking for games");
+            ulong channel_ID = BotConfiguration.GetChannelID("looking for games", Context.Guild.Id);
             var day = DateTime.Today.DayOfWeek;
             DateTime time = DateTime.Now;
             var timestr = time.ToString("h:mm tt");
             var mention = Context.User.Mention;
+
+            IMessageChannel channel = (IMessageChannel)Context.Guild.Channels.FirstOrDefault(x => x.Id == channel_ID);
 
             await channel.SendMessageAsync($"{mention} is looking for games. [{day}, {timestr}]");
         }
 
         public async Task Lfg_addrole()
         {
-            string role_name = CurrentConfiguration.GetChannelName("LFG");
+            /*
+            string role_name = BotConfiguration.GetChannelID("LFG");
             var role = Context.Guild.Roles.FirstOrDefault(x => x.Name == role_name);
             await (Context.User as IGuildUser).AddRoleAsync(role);
+
+            LFG role id should be added to database
+            */
         }
     }        
 }

@@ -5,6 +5,24 @@ using Discord.WebSocket;
 using System.Reflection;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
+using System.Data.SqlClient;
+using WestBot;
+using System.Data;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Discord.Commands;
+using Discord;
+using Discord.WebSocket;
+using System.Threading.Tasks;
+using System.Data.SqlClient;
+using System.Data;
+using WestBot;
+using System.Text.RegularExpressions;
+using System.Globalization;
+
 
 namespace Westbot.Services
 {
@@ -24,16 +42,46 @@ namespace Westbot.Services
         public async Task AnnounceJoinedUser(SocketGuildUser user) //Welcomes the new user
         {
             //Calling getchannelname with "user join" will get the name of this local channel's user join channel
-            await CurrentConfiguration.GetChannel("General").SendMessageAsync($"Welcome, <@{user.Id}>!");
-            if(CurrentConfiguration.GetChannel("User Join") != null)
-                await CurrentConfiguration.GetChannel("User Join").SendMessageAsync(user.Mention + " has joined.");
+            IMessageChannel channel = (IMessageChannel)user.Guild.Channels.FirstOrDefault(x => x.Id == BotConfiguration.GetChannelID("General", user.Guild.Id));
+
+            await channel.SendMessageAsync($"Welcome, <@{user.Id}>!");
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
+                {
+                    SqlCommand command = new SqlCommand("GetStreamChannelID", conn);
+                    SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
+                    returnValue.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(returnValue);
+                    command.Parameters.Add(new SqlParameter("@serverID", user.Guild.Id.ToString()));
+                    command.Parameters.Add(new SqlParameter("@target_channel", "Stream"));
+
+                    conn.Open();
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.ExecuteNonQuery();
+
+                    long result2 = (long)returnValue.Value;
+                    UInt64 result = (UInt64)result2;
+
+                    IMessageChannel general_channel = (IMessageChannel)user.Guild.Channels.FirstOrDefault(x => x.Id == result);
+                    await general_channel.SendMessageAsync(user.Mention + " has joined.");
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                return;
+            }
+
         }
 
         public async Task InstallCommandsAsync()
         {
             _client.MessageReceived += HandleCommandAsync;
             _client.UserJoined += AnnounceJoinedUser;
-            _client.GuildAvailable += CurrentConfiguration.LoadChannels;
+            //_client.GuildAvailable += BotConfiguration.LoadChannels;
             _commands.CommandExecuted += OnCommandExecutedAsync;
             await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
                                             services: _services);
@@ -45,7 +93,7 @@ namespace Westbot.Services
             if (msg.Source != MessageSource.User) return;
 
             int argPos = 0;
-            char prefix = CurrentConfiguration.Prefix;
+            char prefix = BotConfiguration.Prefix;
 
             if (!
                (message.Content.ToCharArray()[argPos] == prefix ||
@@ -75,16 +123,16 @@ namespace Westbot.Services
                         break; //no reaction needed
 
                     if (customResult.IsSuccess)
-                        await CurrentConfiguration.GenerateReaction(context, AcceptState.Accept);
+                        await BotConfiguration.GenerateReaction(context, AcceptState.Accept);
                     else
-                        await CurrentConfiguration.GenerateReaction(context, AcceptState.Error);
+                        await BotConfiguration.GenerateReaction(context, AcceptState.Error);
 
                     break;
                 default:
                     if (!string.IsNullOrEmpty(result.ErrorReason))
-                        await CurrentConfiguration.GenerateReaction(context, AcceptState.Error);
+                        await BotConfiguration.GenerateReaction(context, AcceptState.Error);
                     else
-                        await CurrentConfiguration.GenerateReaction(context, AcceptState.Accept);
+                        await BotConfiguration.GenerateReaction(context, AcceptState.Accept);
                     break;
             }
         }

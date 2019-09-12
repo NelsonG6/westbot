@@ -23,9 +23,9 @@ namespace Westbot
             client.Log += LogAsync;
             services.GetRequiredService<CommandService>().Log += LogAsync;
 
-            CurrentConfiguration.Load(call_args);
+            BotConfiguration.Load(call_args);
 
-            await client.LoginAsync(TokenType.Bot, CurrentConfiguration.Token);
+            await client.LoginAsync(TokenType.Bot, BotConfiguration.Token);
             await client.StartAsync();
             
             await services.GetRequiredService<Services.CommandHandler>().InstallCommandsAsync();
