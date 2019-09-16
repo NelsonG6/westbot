@@ -16,9 +16,6 @@ namespace Westbot
         public async Task<RuntimeResult> Lfg([Remainder]String arg = "")
         {
             await Lfg_function();
-            if(arg != "") //an arg was passed
-            //add the role
-                await Lfg_addrole();
             return WestbotCommandResult.AcceptReact("lfgsuccess");
         }
 
@@ -28,14 +25,13 @@ namespace Westbot
         public async Task<RuntimeResult> Lfgr([Remainder]String arg = "")
         {
             await Lfg_function();
-            await Lfg_addrole();
 
             return WestbotCommandResult.AcceptReact("lfgsuccess");
         }
 
         public async Task Lfg_function()
         {
-            ulong channel_ID = BotConfiguration.GetChannelID("looking for games", Context.Guild.Id);
+            ulong channel_ID = BotConfiguration.GetChannelID("LFG", Context.Guild.Id);
             var day = DateTime.Today.DayOfWeek;
             DateTime time = DateTime.Now;
             var timestr = time.ToString("h:mm tt");
@@ -46,15 +42,5 @@ namespace Westbot
             await channel.SendMessageAsync($"{mention} is looking for games. [{day}, {timestr}]");
         }
 
-        public async Task Lfg_addrole()
-        {
-            /*
-            string role_name = BotConfiguration.GetChannelID("LFG");
-            var role = Context.Guild.Roles.FirstOrDefault(x => x.Name == role_name);
-            await (Context.User as IGuildUser).AddRoleAsync(role);
-
-            LFG role id should be added to database
-            */
-        }
     }        
 }

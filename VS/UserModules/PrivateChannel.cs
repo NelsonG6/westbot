@@ -30,8 +30,8 @@ namespace WestBot.Modules
                     SqlParameter returnValue = new SqlParameter("returnVal", SqlDbType.Int);
                     returnValue.Direction = ParameterDirection.ReturnValue;
                     command.Parameters.Add(returnValue);
-                    command.Parameters.Add(new SqlParameter("@insert_discord_id", (Int64)Context.User.Id));
-                    command.Parameters.Add(new SqlParameter("@insert_server_id", Context.Guild.Id.ToString()));
+                    command.Parameters.Add(new SqlParameter("@input_user_id", (Int64)Context.User.Id));
+                    command.Parameters.Add(new SqlParameter("@input_server_id", Context.Guild.Id.ToString()));
 
                     command.CommandType = CommandType.StoredProcedure;
                     //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
@@ -45,7 +45,8 @@ namespace WestBot.Modules
                     if(result == 0)
                     {   
                         //create a channel and pass the stored procedure the channel ID
-                        //Get the role ID for adminbot role on this current server
+                        //Get the role ID for adminbot role on this current server,
+                        //Which is used to grant adminbots access to the users private channel.
                         command = new SqlCommand("GetAdminbotRoleID", conn);
                         command.Parameters.Add(new SqlParameter("@current_server", Context.Guild.Id.ToString()));
                         returnValue = new SqlParameter
@@ -81,9 +82,9 @@ namespace WestBot.Modules
                         
                         //Now that the private channel has been created, add it to the database.
                         command = new SqlCommand("AddPrivateChannel", conn);
-                        command.Parameters.Add(new SqlParameter("@insert_discord_id", (Int64)Context.User.Id));
-                        command.Parameters.Add(new SqlParameter("@insert_server_id", Context.Guild.Id.ToString()));
-                        command.Parameters.Add(new SqlParameter("@insert_channel_id", (Int64)id));
+                        command.Parameters.Add(new SqlParameter("@input_user_id", (Int64)Context.User.Id));
+                        command.Parameters.Add(new SqlParameter("@input_server_id", Context.Guild.Id.ToString()));
+                        command.Parameters.Add(new SqlParameter("@input_channel_id", (Int64)id));
                         command.CommandType = CommandType.StoredProcedure;
                         command.ExecuteNonQuery();
 
@@ -100,6 +101,7 @@ namespace WestBot.Modules
 
                 }
             }
+
             catch (Exception ex)
             {
                 //display error message

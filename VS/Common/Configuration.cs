@@ -32,8 +32,8 @@ namespace Westbot
                     SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
                     returnValue.Direction = ParameterDirection.Output;
                     command.Parameters.Add(returnValue);
-                    command.Parameters.Add(new SqlParameter("@serverID", ServerID));
-                    command.Parameters.Add(new SqlParameter("@target_channel", "Stream"));
+                    command.Parameters.Add(new SqlParameter("@serverID", (Int64)ServerID));
+                    command.Parameters.Add(new SqlParameter("@target_channel", target_channel));
 
                     conn.Open();
                     command.CommandType = CommandType.StoredProcedure;
