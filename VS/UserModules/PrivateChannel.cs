@@ -26,21 +26,27 @@ namespace WestBot.Modules
             {
                 using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
                 {
-                    SqlCommand command = new SqlCommand("CheckPrivateChannel", conn);
-                    SqlParameter returnValue = new SqlParameter("returnVal", SqlDbType.Int);
-                    returnValue.Direction = ParameterDirection.ReturnValue;
-                    command.Parameters.Add(returnValue);
-                    command.Parameters.Add(new SqlParameter("@input_user_id", (Int64)Context.User.Id));
-                    command.Parameters.Add(new SqlParameter("@input_server_id", Context.Guild.Id.ToString()));
-
-                    command.CommandType = CommandType.StoredProcedure;
-                    //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
-
                     conn.Open();
-
+                    SqlCommand command = new SqlCommand("GetDatabaseUserID", conn);
+                    command.Parameters.Add(new SqlParameter("@input_user_id", (Int64)Context.User.Id));
+                    command.Parameters.Add(new SqlParameter("@input_server_id", (Int64)Context.Guild.Id));
+                    SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
+                    returnValue.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(returnValue);
+                    command.CommandType = CommandType.StoredProcedure;
                     command.ExecuteNonQuery();
 
-                    int result = (Int32)returnValue.Value;
+                    long ID = (long)returnValue.Value;
+
+                    command = new SqlCommand("GetPrivateChannel", conn);
+                    returnValue = new SqlParameter("@result", SqlDbType.BigInt);
+                    returnValue.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(returnValue);
+                    command.Parameters.Add(new SqlParameter("@input_database_id", ID));
+                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.ExecuteNonQuery();
+
+                    long result = (long)returnValue.Value;
 
                     if(result == 0)
                     {   

@@ -12,6 +12,7 @@ namespace Westbot.Services
     public class RolesModule : ModuleBase<SocketCommandContext>
     {
         //Commands begin
+        /*
         [Command("create"), Alias("makerole", "createrole")]
         [Remarks("Bot makes a role")]
         [MinPermissions(AccessLevel.User)]
@@ -245,5 +246,6 @@ namespace Westbot.Services
                 return false;
             return true;
         }
+        */
     }
 }
