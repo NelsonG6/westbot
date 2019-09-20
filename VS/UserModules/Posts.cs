@@ -74,6 +74,48 @@ namespace Westbot.Modules
                 return WestbotCommandResult.ErrorReact(null, true);
             }
 
-        }    
+        }
+
+        [Command("capcom")]
+        [Remarks("Post a stream to the stream channel.")]
+        [MinPermissions(AccessLevel.User)]
+        public async Task<RuntimeResult> capcom([Remainder]string post_string = "")
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
+                {
+                    SqlCommand command = new SqlCommand("GetChannelID", conn);
+                    SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
+                    returnValue.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(returnValue);
+                    command.Parameters.Add(new SqlParameter("@serverID", Context.Guild.Id.ToString()));
+                    command.Parameters.Add(new SqlParameter("@target_channel", "Stream"));
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
+
+                    conn.Open();
+
+                    command.ExecuteNonQuery();
+
+                    long result2 = (long)returnValue.Value;
+                    UInt64 result = (UInt64)result2;
+
+                    var stream_channel = Context.Guild.GetTextChannel(result);
+                    await stream_channel.SendMessageAsync("Posted by " + Context.User.Mention + "\n" + "https://twitch.tv/capcomfighters");
+                    return WestbotCommandResult.AcceptReact("postsuccess");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                //display error message
+                Console.WriteLine("Exception: " + ex.Message);
+                await Context.Channel.SendMessageAsync("Exception: " + ex.Message);
+                return WestbotCommandResult.ErrorReact(null, true);
+            }
+
+        }
     }
 }

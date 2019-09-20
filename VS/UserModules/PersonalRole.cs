@@ -106,7 +106,7 @@ namespace WestBot
                         command.ExecuteNonQuery();
 
                         long result2 = (long)returnValue.Value;
-                        UInt64 id = (UInt64)result2;
+                        ulong id = (UInt64)result2;
 
                         var role = Context.Guild.GetRole(id);
                         
