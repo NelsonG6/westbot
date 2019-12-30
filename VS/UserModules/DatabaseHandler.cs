@@ -23,6 +23,22 @@ namespace WestBot
             }   
         }
 
+        static public int VerifyUserExists(ulong UserID)
+        {
+            using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
+            {
+                SqlCommand command = new SqlCommand("VerifyUserExists", conn);
+                command.Parameters.Add(new SqlParameter("@input_user_id", (Int64)UserID));
+                SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
+                returnValue.Direction = ParameterDirection.Output;
+                command.Parameters.Add(returnValue);
+                command.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+                command.ExecuteNonQuery();
+                return Convert.ToInt32(returnValue.Value);
+            }
+        }
+
         static public ulong GetPersonalChannel(int userID)
         {
             using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
@@ -127,6 +143,19 @@ namespace WestBot
                 SqlCommand command = new SqlCommand("AddPersonalRole", conn);
                 command.Parameters.Add(new SqlParameter("@input_user_id", (Int64)userID));
                 command.Parameters.Add(new SqlParameter("@input_role_id", (Int64)newRoleID));
+                command.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
+        static public void RemoveUser(int userID)
+        {
+            using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
+            {
+                //Now that the private channel has been created, add it to the database.
+                SqlCommand command = new SqlCommand("RemoveUser", conn);
+                command.Parameters.Add(new SqlParameter("@input_user_id", (Int64)userID));
                 command.CommandType = CommandType.StoredProcedure;
                 conn.Open();
                 command.ExecuteNonQuery();
