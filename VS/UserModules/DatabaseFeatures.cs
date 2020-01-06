@@ -30,7 +30,7 @@ namespace WestBot
                         string resultString = $"Setting up {mention}:\n";
                         
                         //User ID section
-                        int userID = DatabaseHandler.GetUserID(Context.User.Id, Context.Guild.Id);
+                        int userID = DatabaseHandler.GetUserID(Context.User.Id);
 
                         //If the user doesn't exist, create and insert him.
                         if (userID == 0)
@@ -72,7 +72,7 @@ namespace WestBot
                                 {
                                     x.Color = new Color(Convert.ToUInt32(arg, 16));
                                 });
-                                resultString += "I set your color for you.";
+                                resultString += "I set your color for you.\n";
                             }
                         }
                         else
@@ -83,7 +83,7 @@ namespace WestBot
 
                         if (personalChannel == 0)
                         {
-                            ulong adminBotRoleID = DatabaseHandler.GetAdminbotRoleID(Context.Guild.Id);
+                            ulong adminBotRoleID = DatabaseHandler.GetAdminbotRoleID();
 
                             var adminBot = Context.Guild.GetRole(adminBotRoleID);
 
@@ -134,7 +134,7 @@ namespace WestBot
 
                 try
                 {
-                    var userID = DatabaseHandler.GetUserID(Context.User.Id, Context.Guild.Id);
+                    var userID = DatabaseHandler.GetUserID(Context.User.Id);
                     if(userID == 0)
                     {
                         await Setup(arg);
@@ -178,11 +178,11 @@ namespace WestBot
                                 total_difference += Math.Abs(max - i);
                             }
                         }
-                        if (total_difference <= 15)
+                        if (total_difference <= 50)
                             deny_color = true;
                     }
 
-                    else if (max > 150)
+                    else if (max > 175)
                     {
                         //Since there is a color above 200, we need to make sure the difference of these colors...
                         //Is great enough to prevent a whitish color from being chosen.
@@ -195,7 +195,7 @@ namespace WestBot
                                 total_difference += Math.Abs(max - i);
                             }
                         }
-                        if (total_difference <= 10)
+                        if (total_difference <= 20)
                             deny_color = true;
                     }
 

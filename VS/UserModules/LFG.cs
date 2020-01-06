@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 using Discord;
+using WestBot;
 
 namespace Westbot
 {
@@ -31,7 +32,7 @@ namespace Westbot
 
         public async Task Lfg_function()
         {
-            ulong channel_ID = BotConfiguration.GetChannelID("LFG", Context.Guild.Id);
+            ulong channel_ID = DatabaseHandler.GetChannelID("LFG");
             var day = DateTime.Today.DayOfWeek;
             DateTime time = DateTime.Now;
             var timestr = time.ToString("h:mm tt");

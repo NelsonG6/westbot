@@ -47,8 +47,8 @@ namespace Westbot.Modules
                     SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
                     returnValue.Direction = ParameterDirection.Output;
                     command.Parameters.Add(returnValue);
-                    command.Parameters.Add(new SqlParameter("@serverID", Context.Guild.Id.ToString()));
-                    command.Parameters.Add(new SqlParameter("@target_channel", "Stream"));
+                    command.Parameters.Add(new SqlParameter("@input_server_id", Context.Guild.Id.ToString()));
+                    command.Parameters.Add(new SqlParameter("@input_channel_type", "Stream"));
 
                     command.CommandType = CommandType.StoredProcedure;
                     //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));

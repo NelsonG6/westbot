@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 
 using Discord.Commands;
+using System.Linq;
+using WestBot;
 
 namespace Westbot
 {
@@ -29,6 +31,38 @@ namespace Westbot
             await client.StartAsync();
             
             await services.GetRequiredService<Services.CommandHandler>().InstallCommandsAsync();
+
+            client.Ready += () =>
+            {
+                var Guild = client.GetGuild(BotConfiguration.ServerID);
+
+
+                ulong BotVersionChannel = 0;
+                try
+                {
+                    BotVersionChannel = DatabaseHandler.GetChannelID("BotVersion");
+                }
+                catch (Exception ex)
+                {
+                    Console.Write("Exception: " + ex.Message);
+                }
+
+                var channel = Guild.GetTextChannel(BotVersionChannel);
+                string version = "";
+                try
+                {
+                    version = DatabaseHandler.GetVersion();
+                }
+                catch (Exception ex)
+                {
+                    Console.Write("Exception: " + ex.Message);
+                }
+
+
+                channel.SendMessageAsync("Bot version " + version + " is online.");
+                Console.WriteLine("Bot is connected!");
+                return Task.CompletedTask;
+            };
 
             await Task.Delay(-1);
         }

@@ -27,40 +27,29 @@ namespace Westbot.Services
 
         public async Task AnnounceJoinedUser(SocketGuildUser user) //Welcomes the new user
         {
-            //Calling getchannelname with "user join" will get the name of this local channel's user join channel
-            IMessageChannel channel = (IMessageChannel)user.Guild.Channels.FirstOrDefault(x => x.Id == BotConfiguration.GetChannelID("General", user.Guild.Id));
-
-            await channel.SendMessageAsync($"Welcome, <@{user.Id}>!");
-
+            //Announce the join in general chat
             try
             {
-                using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
-                {
-                    SqlCommand command = new SqlCommand("GetStreamChannelID", conn);
-                    SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
-                    returnValue.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(returnValue);
-                    command.Parameters.Add(new SqlParameter("@serverID", user.Guild.Id.ToString()));
-                    command.Parameters.Add(new SqlParameter("@target_channel", "Stream"));
-
-                    conn.Open();
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.ExecuteNonQuery();
-
-                    long result2 = (long)returnValue.Value;
-                    UInt64 result = (UInt64)result2;
-
-                    IMessageChannel general_channel = (IMessageChannel)user.Guild.Channels.FirstOrDefault(x => x.Id == result);
-                    await general_channel.SendMessageAsync(user.Mention + " has joined.");
-                }
+                ulong GeneralChatChannel = DatabaseHandler.GetChannelID("General");
+                IMessageChannel channel = (IMessageChannel)user.Guild.Channels.FirstOrDefault(x => x.Id == GeneralChatChannel);
+                await channel.SendMessageAsync($"Welcome, <@{user.Id}>!");
             }
             catch (Exception ex)
             {
-                //display error message
-                Console.WriteLine("Exception: " + ex.Message);
-                return;
+                Console.Write("Exception: " + ex.Message);
             }
 
+            //Announce the channel in the user join channel, if one exists
+            try
+            {
+                ulong UserJoinChannel = DatabaseHandler.GetChannelID("UserJoin");
+                IMessageChannel channel = (IMessageChannel)user.Guild.Channels.FirstOrDefault(x => x.Id == UserJoinChannel);
+                await channel.SendMessageAsync($"<@{user.Id}> has joined.");
+            }
+            catch (Exception ex)
+            {
+                Console.Write("Exception: " + ex.Message);
+            }
         }
 
         public async Task InstallCommandsAsync()
@@ -102,6 +91,8 @@ namespace Westbot.Services
 
         public async Task OnCommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
+            bool error_state = false;
+
             switch (result)
             {
                 case WestbotCommandResult customResult:
@@ -109,18 +100,47 @@ namespace Westbot.Services
                         break; //no reaction needed
 
                     if (customResult.IsSuccess)
-                        await BotConfiguration.GenerateReaction(context, AcceptState.Accept);
+                        error_state = AcceptState.Accept;
                     else
-                        await BotConfiguration.GenerateReaction(context, AcceptState.Error);
+                        error_state = AcceptState.Error;
 
                     break;
                 default:
                     if (!string.IsNullOrEmpty(result.ErrorReason))
-                        await BotConfiguration.GenerateReaction(context, AcceptState.Error);
+                        error_state = AcceptState.Error;
                     else
-                        await BotConfiguration.GenerateReaction(context, AcceptState.Accept);
+                        error_state = AcceptState.Accept;
                     break;
             }
+
+            string reaction_type;
+            if (!error_state)
+                reaction_type = "Accept";
+            else
+                reaction_type = "Error";
+
+            int ReturnValue = DatabaseHandler.EmoteOrEmoji(reaction_type);
+
+            if (ReturnValue == 0)
+            {   //Emojis
+                string ReturnString = DatabaseHandler.GetRandomEmoji(reaction_type);
+
+                Emoji emoji_to_add = new Emoji(ReturnString);
+                await context.Message.AddReactionAsync(emoji_to_add);
+            }
+            else
+            {   //emotes
+
+                int ReturnID = DatabaseHandler.GetRandomEmote(reaction_type);
+                long result2 = (long)ReturnID;
+                UInt64 ResultID = (UInt64)result2;
+
+                IEmote emote_to_add = context.Guild.Emotes.FirstOrDefault(x => x.Id == ResultID);
+                //var emote_to_add = Context.Guild.GetEmoteAsync(result);
+
+                await context.Message.AddReactionAsync((IEmote)emote_to_add);
+            }
+
         }
     }
 }
