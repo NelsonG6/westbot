@@ -67,6 +67,8 @@ namespace Westbot.Services
             if (!(msg is SocketUserMessage message)) return;
             if (msg.Source != MessageSource.User) return;
 
+            char[] messageArray = message.Content.ToCharArray();
+
             int argPos = 0;
             char prefix = BotConfiguration.Prefix;
 
@@ -76,8 +78,12 @@ namespace Westbot.Services
                 )
                 return;
             
+            //Check if the first two characters are a period. If so, don't take the command.
+            if(messageArray[0] == BotConfiguration.Prefix && messageArray[1] == BotConfiguration.Prefix)
+                return;
+
             //Skip extra spaces that come after the prefix
-            while (message.Content.ToCharArray()[argPos + 1] == ' ')
+            while (messageArray[argPos + 1] == ' ')
             {
                 ++argPos;
             }
@@ -131,9 +137,8 @@ namespace Westbot.Services
             else
             {   //emotes
 
-                int ReturnID = DatabaseHandler.GetRandomEmote(reaction_type);
-                long result2 = (long)ReturnID;
-                UInt64 ResultID = (UInt64)result2;
+                long ReturnID = DatabaseHandler.GetRandomEmote(reaction_type);
+                UInt64 ResultID = (UInt64)ReturnID;
 
                 IEmote emote_to_add = context.Guild.Emotes.FirstOrDefault(x => x.Id == ResultID);
                 //var emote_to_add = Context.Guild.GetEmoteAsync(result);

@@ -15,12 +15,18 @@ namespace Westbot
             String ConfigurationName = "";
 
             if (config_name.Length == 0)
-                ConfigurationName = "Testbot";
+                ConfigurationName = "";
             else
                 ConfigurationName = config_name[0];
 
-
+            if (ConfigurationName == "")
+            {
+                ConfigurationName = "Testbot";
+                DatabaseHandler.BumpPatch();
+            }
+            
             // load config from database
+
             try
             {
                 DatabaseHandler.GetConfiguration(ConfigurationName);

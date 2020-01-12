@@ -96,6 +96,7 @@ namespace WestBot
                 command.Parameters.Add(returnDescription);
                 command.Parameters.Add(new SqlParameter("@input_reaction_type", reaction_type));
                 command.CommandType = CommandType.StoredProcedure;
+                conn.Open();
                 command.ExecuteNonQuery();
 
                 /*string str = (string)returnValue.Value;
@@ -108,7 +109,7 @@ namespace WestBot
             }
         }
 
-        static public int GetRandomEmote(string reaction_type)
+        static public long GetRandomEmote(string reaction_type)
         {
             using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
             {
@@ -119,11 +120,11 @@ namespace WestBot
                 command.Parameters.Add(new SqlParameter("@input_reaction_type", reaction_type));
                 command.Parameters.Add(new SqlParameter("@input_server_id", (Int64)BotConfiguration.ServerID));
                 command.CommandType = CommandType.StoredProcedure;
+                conn.Open();
                 command.ExecuteNonQuery();
-
                 Console.WriteLine("Emote from database: " + returnValue.Value.ToString());
 
-                return (int)returnValue.Value;
+                return (long)returnValue.Value;
             }
         }
 
@@ -298,6 +299,19 @@ namespace WestBot
                 conn.Open();
                 command.ExecuteNonQuery();
                 return (string)returnValue.Value;
+            }
+        }
+
+        static public void BumpPatch()
+        {
+            using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
+            {
+                //Now that the private channel has been created, add it to the database.
+                SqlCommand command = new SqlCommand("BumpVersion", conn);
+                command.Parameters.Add(new SqlParameter("@selector", Convert.ToInt64(0)));
+                command.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+                command.ExecuteNonQuery();
             }
         }
     }

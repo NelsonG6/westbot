@@ -76,7 +76,7 @@ namespace WestBot
                             }
                         }
                         else
-                            resultString += "Personal role already exists.";
+                            resultString += "Personal role already exists.\n";
 
                         //Personal Channel section
                         ulong personalChannel = DatabaseHandler.GetPersonalChannel(userID);
@@ -100,6 +100,7 @@ namespace WestBot
                             await newChannel.AddPermissionOverwriteAsync(adminBot, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Allow));
                             await newChannel.AddPermissionOverwriteAsync(role, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Allow));
                             await newChannel.AddPermissionOverwriteAsync(everyone, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Deny));
+                            await newChannel.AddPermissionOverwriteAsync(role, new Discord.OverwritePermissions(manageMessages: Discord.PermValue.Allow));
 
                             DatabaseHandler.AddPersonalChannel(userID, newChannelID);
                             resultString += "Channel created.\n";
@@ -108,6 +109,110 @@ namespace WestBot
                             resultString += "Channel already exists.\n";
 
                         
+
+                        await Context.Channel.SendMessageAsync(resultString);
+                        return WestbotCommandResult.AcceptReact(null, true);
+                    }
+                }
+                catch (Exception ex)
+                {   //Display exception.
+                    Console.WriteLine("Exception: " + ex.Message);
+                    await Context.Channel.SendMessageAsync("Exception: " + ex.Message);
+                    return WestbotCommandResult.ErrorReact(null, true);
+                }
+            }
+
+            [Command("Setup"), Alias("Build", "BuildChannel", "BuildRole")]
+            [Remarks("Admin sets up another user.")]
+            [MinPermissions(AccessLevel.ServerOwner)]
+            public async Task<RuntimeResult> Setup(IGuildUser user, [Remainder]String arg = "")
+            {
+                try
+                {
+                    using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
+                    {
+                        var mention = user.Mention;
+
+                        string resultString = $"Setting up {mention}:\n";
+
+                        //User ID section
+                        int userID = DatabaseHandler.GetUserID(user.Id);
+
+                        //If the user doesn't exist, create and insert him.
+                        if (userID == 0)
+                        {
+                            userID = DatabaseHandler.AddUser(user.Id, Context.Guild.Id, user.Username);
+                            resultString += "User ID created.\n";
+                        }
+                        else
+                            resultString += "User ID already exists.\n";
+
+                        //Personal role section
+                        ulong result = DatabaseHandler.GetPersonalRole(userID);
+
+                        Discord.Rest.RestRole role = null;
+
+                        //Check if we got a result.
+                        if (result == 0)
+                        {   //No result was found
+
+                            var name = user.Username.ToString();
+
+                            //Create the role in discord.
+                            role = await Context.Guild.CreateRoleAsync(name);
+
+                            //Add the role to the user who called this command.
+                            await ((IGuildUser)user).AddRoleAsync(role);
+
+                            //Add the role to the database
+                            DatabaseHandler.AddPersonalRole(userID, role.Id);
+
+                            //Command complete.
+                            resultString += "Personal role created.\n";
+
+                            if (arg != "")
+                            {
+                                arg = arg.TrimStart('#');
+
+                                await role.ModifyAsync(x =>
+                                {
+                                    x.Color = new Color(Convert.ToUInt32(arg, 16));
+                                });
+                                resultString += "I set your color for you.\n";
+                            }
+                        }
+                        else
+                            resultString += "Personal role already exists.\n";
+
+                        //Personal Channel section
+                        ulong personalChannel = DatabaseHandler.GetPersonalChannel(userID);
+
+                        if (personalChannel == 0)
+                        {
+                            ulong adminBotRoleID = DatabaseHandler.GetAdminbotRoleID();
+
+                            var adminBot = Context.Guild.GetRole(adminBotRoleID);
+
+                            var newChannel = await Context.Guild.CreateTextChannelAsync(user.Username.ToString(), x =>
+                            {
+                                x.Topic = $"Your personal channel to talk to the bot.";
+                                x.Position = 2;
+                            });
+
+                            var newChannelID = newChannel.Id;
+
+                            var everyone = Context.Guild.EveryoneRole;
+
+                            await newChannel.AddPermissionOverwriteAsync(adminBot, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Allow));
+                            await newChannel.AddPermissionOverwriteAsync(role, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Allow));
+                            await newChannel.AddPermissionOverwriteAsync(everyone, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Deny));
+                            await newChannel.AddPermissionOverwriteAsync(role, new Discord.OverwritePermissions(manageMessages: Discord.PermValue.Allow));
+
+                            DatabaseHandler.AddPersonalChannel(userID, newChannelID);
+                            resultString += "Channel created.\n";
+                        }
+                        else
+                            resultString += "Channel already exists.\n";
 
                         await Context.Channel.SendMessageAsync(resultString);
                         return WestbotCommandResult.AcceptReact(null, true);

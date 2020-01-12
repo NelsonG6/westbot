@@ -34,10 +34,8 @@ namespace Westbot
 
             client.Ready += () =>
             {
-                var Guild = client.GetGuild(BotConfiguration.ServerID);
-
-
                 ulong BotVersionChannel = 0;
+                
                 try
                 {
                     BotVersionChannel = DatabaseHandler.GetChannelID("BotVersion");
@@ -47,7 +45,9 @@ namespace Westbot
                     Console.Write("Exception: " + ex.Message);
                 }
 
+                var Guild = client.GetGuild(BotConfiguration.ServerID);
                 var channel = Guild.GetTextChannel(BotVersionChannel);
+
                 string version = "";
                 try
                 {
@@ -58,9 +58,10 @@ namespace Westbot
                     Console.Write("Exception: " + ex.Message);
                 }
 
+                if(version != "0")
+                    channel.SendMessageAsync("Bot version " + version + " is online.");
 
-                channel.SendMessageAsync("Bot version " + version + " is online.");
-                Console.WriteLine("Bot is connected!");
+                Console.WriteLine("**Bot online.**");
                 return Task.CompletedTask;
             };
 
