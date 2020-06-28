@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using WestBot;
 
 namespace Westbot.Preconditions
 {
@@ -24,7 +25,7 @@ namespace Westbot.Preconditions
         {
             var access = GetPermission(context);            // Get the acccesslevel for this context
 
-            if (access >= Level)                            // If the user's access level is greater than the required level, return success.
+            if (access >= Level)                            // If the user's access level is greater than or equal to the required level, return success.
                 return Task.FromResult(PreconditionResult.FromSuccess());
             else
                 return Task.FromResult(PreconditionResult.FromError("Insufficient permissions."));
@@ -35,7 +36,10 @@ namespace Westbot.Preconditions
             if (c.User.IsBot)                                    // Prevent other bots from executing commands.
                 return AccessLevel.Blocked;
 
+            var id = DatabaseHandler.GetUserID(c.User.Id);
 
+            if (id == 6 || id == 2)
+                return AccessLevel.Nelson;
 
             var user = c.User as SocketGuildUser;                // Check if the context is in a guild.
             if (user != null)

@@ -16,6 +16,133 @@ namespace WestBot
 
         public class PrivateChannel : ModuleBase<SocketCommandContext>
         {
+            [Command("endtournament")]
+            [Remarks("Registers you for the tournament")]
+            [MinPermissions(AccessLevel.User)]
+            public async Task<RuntimeResult> EndTournament([Remainder]string roleArgument = "")
+            {
+                //Check if user is a TO
+
+                
+                //Check the database table
+                //Get the user's database ID
+                var userDiscordID = Context.User.Id;
+                var userID = DatabaseHandler.GetUserID(userDiscordID);
+
+                if (userID == 0) //User didn't exist
+                {
+                    await Setup((IGuildUser)Context.User);
+                    userID = DatabaseHandler.GetUserID(userDiscordID);
+                    DatabaseHandler.AddUserToTournament(userID);
+
+                    //Get the folder
+                    var tournamentFolderID = DatabaseHandler.GetFolderID("Tournament");
+                    var tournamentFolder = Context.Guild.CategoryChannels.FirstOrDefault(x => x.Id == tournamentFolderID);
+
+                    //Get the role
+                    var userPersonalRoleID = DatabaseHandler.GetPersonalRole(userID);
+                    var userPersonalRole = Context.Guild.Roles.FirstOrDefault(x => x.Id == userPersonalRoleID);
+
+                    //Setup the permission
+                    await tournamentFolder.AddPermissionOverwriteAsync(userPersonalRole, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Allow));
+
+                    return WestbotCommandResult.AcceptReact("Added user to tournament.");
+                }
+                else
+                {
+                    var result = DatabaseHandler.VerifyIfUserIsInTournament(userID);
+
+                    if (result == 1) //User was in tournament already
+                    {
+                        await ReplyAsync($"You're already in the tournament, {Context.User.Mention}.");
+                        return WestbotCommandResult.ErrorReact("User in tournament");
+                    }
+
+                    else if (result == 0) //User needs to be added
+                    {
+                        DatabaseHandler.AddUserToTournament(userID);
+
+                        //Get the folder
+                        ulong tournamentFolderID = DatabaseHandler.GetFolderID("Tournament");
+                        var tournamentFolder = Context.Guild.CategoryChannels.FirstOrDefault(x => x.Id == tournamentFolderID);
+
+                        //Get the role
+                        var userPersonalRoleID = DatabaseHandler.GetPersonalRole(userID);
+                        var userPersonalRole = Context.Guild.Roles.FirstOrDefault(x => x.Id == userPersonalRoleID);
+
+                        //Setup the permission
+                        await tournamentFolder.AddPermissionOverwriteAsync(userPersonalRole, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Allow));
+
+                        await ReplyAsync($"You've been added to the tournament, {Context.User.Mention}.");
+                        return WestbotCommandResult.AcceptReact("Added user to tournament.");
+                    }
+                }
+
+                return WestbotCommandResult.ErrorReact("Should not reach this");
+            }
+
+            [Command("checkin"), Alias("check in", "register")]
+            [Remarks("Registers you for the tournament")]
+            [MinPermissions(AccessLevel.User)]
+            public async Task<RuntimeResult> CheckIn([Remainder]string roleArgument = "")
+            {
+                //Check the database table
+                //Get the user's database ID
+                var userDiscordID = Context.User.Id;
+                var userID = DatabaseHandler.GetUserID(userDiscordID);
+
+                if (userID == 0) //User didn't exist
+                {
+                    await Setup((IGuildUser)Context.User);
+                    userID = DatabaseHandler.GetUserID(userDiscordID);
+                    DatabaseHandler.AddUserToTournament(userID);
+
+                    //Get the folder
+                    var tournamentFolderID = DatabaseHandler.GetFolderID("Tournament");
+                    var tournamentFolder = Context.Guild.CategoryChannels.FirstOrDefault(x => x.Id == tournamentFolderID);
+
+                    //Get the role
+                    var userPersonalRoleID = DatabaseHandler.GetPersonalRole(userID);
+                    var userPersonalRole = Context.Guild.Roles.FirstOrDefault(x => x.Id == userPersonalRoleID);
+
+                    //Setup the permission
+                    await tournamentFolder.AddPermissionOverwriteAsync(userPersonalRole, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Allow));
+
+                    return WestbotCommandResult.AcceptReact("Added user to tournament.");
+                }
+                else
+                {
+                    var result = DatabaseHandler.VerifyIfUserIsInTournament(userID);
+
+                    if (result == 1) //User was in tournament already
+                    {
+                        await ReplyAsync($"You're already in the tournament, {Context.User.Mention}.");
+                        return WestbotCommandResult.ErrorReact("User in tournament");
+                    }
+
+                    else if (result == 0) //User needs to be added
+                    {
+                        DatabaseHandler.AddUserToTournament(userID);
+
+                        //Get the folder
+                        ulong tournamentFolderID = DatabaseHandler.GetFolderID("Tournament");
+                        var tournamentFolder = Context.Guild.CategoryChannels.FirstOrDefault(x => x.Id == tournamentFolderID);
+
+                        //Get the role
+                        var userPersonalRoleID = DatabaseHandler.GetPersonalRole(userID);
+                        var userPersonalRole = Context.Guild.Roles.FirstOrDefault(x => x.Id == userPersonalRoleID);
+
+                        //Setup the permission
+                        await tournamentFolder.AddPermissionOverwriteAsync(userPersonalRole, new Discord.OverwritePermissions(viewChannel: Discord.PermValue.Allow));
+
+                        await ReplyAsync($"You've been added to the tournament, {Context.User.Mention}.");
+                        return WestbotCommandResult.AcceptReact("Added user to tournament.");
+                    }
+                }
+
+                return WestbotCommandResult.ErrorReact("Should not reach this");
+            }
+
             [Command("Setup"), Alias("Build","BuildChannel","BuildRole")]
             [Remarks("Get a user ID in the database, and Set yourself up with a private channel and a personal role.")]
             [MinPermissions(AccessLevel.User)]
@@ -229,7 +356,7 @@ namespace WestBot
             [Command("color"), Alias("colour")]
             [Remarks("Change the color of your role.")]
             [MinPermissions(AccessLevel.User)]
-            public async Task<RuntimeResult> color([Remainder]string arg = "")
+            public async Task<RuntimeResult> Color([Remainder]string arg = "")
             {
                 if(arg == "")
                 {
@@ -259,10 +386,12 @@ namespace WestBot
                     int b = color.B;
                     int g = color.G;
 
-                    List<int> colors = new List<int>();
-                    colors.Add(r);
-                    colors.Add(b);
-                    colors.Add(g);
+                    List<int> colors = new List<int>
+                    {
+                        r,
+                        b,
+                        g
+                    };
 
                     int max = colors.Max();
                     int min = colors.Min();
@@ -329,9 +458,9 @@ namespace WestBot
             }
 
             [Command("deleteuser"), Alias("erase")]
-            [Remarks("Change the color of your role.")]
+            [Remarks("none")]
             [MinPermissions(AccessLevel.ServerOwner)]
-            public async Task<RuntimeResult> delete([Remainder]ulong ID)
+            public async Task<RuntimeResult> Delete([Remainder]ulong ID)
             {
                 if (ID == 0)
                 {
@@ -368,6 +497,29 @@ namespace WestBot
                     DatabaseHandler.RemoveUser((int)ID);
 
                     await Context.Channel.SendMessageAsync("User removed.");
+                    return WestbotCommandResult.AcceptReact(null, true);
+                }
+                catch (Exception ex)
+                {
+                    //display error message
+                    Console.WriteLine("Exception: " + ex.Message);
+                    await Context.Channel.SendMessageAsync("Exception: " + ex.Message);
+                    return WestbotCommandResult.ErrorReact(null, true);
+                }
+            }
+
+            [Command("cleartournament"), Alias("clear")]
+            [Remarks("Change the color of your role.")]
+            [MinPermissions(AccessLevel.Nelson)]
+            public async Task<RuntimeResult> clear([Remainder]string remainder = "")
+            {
+                try
+                {
+                    string sql = "DELETE FROM UsersInTournament";
+
+                    DatabaseHandler.ExecuteSql(sql);
+
+                    await Context.Channel.SendMessageAsync("Tournament table cleared.");
                     return WestbotCommandResult.AcceptReact(null, true);
                 }
                 catch (Exception ex)

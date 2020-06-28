@@ -217,13 +217,12 @@
     <Compile Include="Common\ConnString.cs" />
     <Compile Include="SupportModules\Debug.cs" />
     <Compile Include="SupportModules\Help.cs" />
+    <Compile Include="UserModules\DatabaseFeatures.cs" />
+    <Compile Include="UserModules\DatabaseHandler.cs" />
     <Compile Include="UserModules\LFG.cs" />
     <Compile Include="UserModules\Memes.cs" />
     <Compile Include="SupportModules\Moderation.cs" />
-    <Compile Include="UserModules\PersonalRole.cs" />
     <Compile Include="UserModules\Posts.cs" />
-    <Compile Include="UserModules\PrivateChannel.cs" />
-    <Compile Include="UserModules\RandomGames.cs" />
     <Compile Include="UserModules\Roles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\CommandHandler.cs" />

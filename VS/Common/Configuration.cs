@@ -12,7 +12,7 @@ namespace Westbot
 
         public static void Load(string[] config_name)
         {
-            String ConfigurationName = "";
+            String ConfigurationName;
 
             if (config_name.Length == 0)
                 ConfigurationName = "";
@@ -41,8 +41,7 @@ namespace Westbot
                 return;
             }
             //no match was found
-
-
+            Console.WriteLine("No match was found.");
         }    
     }
 }

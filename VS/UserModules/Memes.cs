@@ -36,6 +36,18 @@ namespace Westbot
             return WestbotCommandResult.AcceptNoReaction();
         }
 
+        [Command("don"), Alias("dannypham", "donking", "don king", "matchmaker", "dannyking", "donpham", "don pham", "dan king", "danny king")]
+        [Remarks("post don king")]
+        [MinPermissions(AccessLevel.User)]
+        public async Task<RuntimeResult> Donking([Remainder]String arg = "")
+        {
+            var filename = "donking.jpg";
+            string path = Path.Combine(AppContext.BaseDirectory, "Uploads", filename);
+
+            await Context.Channel.SendFileAsync(path);
+            return WestbotCommandResult.AcceptNoReaction();
+        }
+
         [Command("mjcry"), Alias("<:mjcry:306930362943143937>", "<:mjcry:330212258993012747>")]
         [Remarks("mj")]
         [MinPermissions(AccessLevel.User)]
@@ -82,6 +94,63 @@ namespace Westbot
             return WestbotCommandResult.AcceptNoReaction();
         }
 
+        [Command("false"), Alias("thatsfalse",
+                                    "notthistime",
+                                    "wecreatedit",
+                                    "purefiction",
+                                    "itsfiction",
+                                    "pure fiction", 
+                                    "its fiction",
+                                    "it's fiction",
+                                    "we made this one up",
+                                    "total fabrication",
+                                    "it never happened",
+                                    "not this time",
+                                    "it's an urban legend that never happened",
+                                    "no way",
+                                    "not a chance",
+                                    "wrong",
+                                    "fiction")]
+        [Remarks("Jonathan Frakes telling you you're wrong for 47 seconds.")]
+        [MinPermissions(AccessLevel.User)]
+        public async Task<RuntimeResult> ThatsFalse([Remainder]String arg = "")
+        {
+            var filename = "mindblown.gif";
+            string path = Path.Combine(AppContext.BaseDirectory, "Uploads", filename);
+
+            await Context.Channel.SendMessageAsync("https://www.youtube.com/watch?v=GM-e46xdcUo");
+            return WestbotCommandResult.AcceptNoReaction();
+        }
+
+        [Command("true"), Alias("you're right",
+                                    "its fact",
+                                    "it's fact",
+                                    "purefiction",
+                                    "itsfiction",
+                                    "pure fiction",
+                                    "its fiction",
+                                    "it's fiction",
+                                    "we made this one up",
+                                    "total fabrication",
+                                    "it never happened",
+                                    "not this time",
+                                    "it's an urban legend that never happened",
+                                    "no way",
+                                    "not a chance",
+                                    "wrong",
+                                    "fiction")]
+        [Remarks("jonathan Frakes telling you you're right for 41 seconds.")]
+        [MinPermissions(AccessLevel.User)]
+        public async Task<RuntimeResult> ThatsTrue([Remainder]String arg = "")
+        {
+            var filename = "mindblown.gif";
+            string path = Path.Combine(AppContext.BaseDirectory, "Uploads", filename);
+
+            await Context.Channel.SendMessageAsync("https://www.youtube.com/watch?v=MCT80HJWQ2A");
+            return WestbotCommandResult.AcceptNoReaction();
+        }
+
+
         [Command("mindblown"), Alias("Mindblown", "<galaxybrain499025178693468181>", "<:galaxybrain:498737219817963542>")]
         [Remarks("mindblown")]
         [MinPermissions(AccessLevel.User)]
@@ -93,6 +162,7 @@ namespace Westbot
             await Context.Channel.SendFileAsync(path);
             return WestbotCommandResult.AcceptNoReaction();
         }
+
         [Command("yes"), Alias("<:yes:456337505541685249>")]
         [Remarks("yes")]
         [MinPermissions(AccessLevel.User)]

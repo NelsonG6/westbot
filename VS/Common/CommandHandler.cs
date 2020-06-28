@@ -64,6 +64,7 @@ namespace Westbot.Services
 
         public async Task HandleCommandAsync(SocketMessage msg)
         {
+            //Not sure what this does
             if (!(msg is SocketUserMessage message)) return;
             if (msg.Source != MessageSource.User) return;
 

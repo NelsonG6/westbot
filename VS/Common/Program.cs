@@ -4,9 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
-
 using Discord.Commands;
-using System.Linq;
 using WestBot;
 
 namespace Westbot

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Westbot.Preconditions;
-using Discord;
 using Discord.WebSocket;
 using System.Data.SqlClient;
 using System.Data;
@@ -43,27 +42,30 @@ namespace Westbot.Modules
             {
                 using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
                 {
-                    SqlCommand command = new SqlCommand("GetChannelID", conn);
-                    SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
-                    returnValue.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(returnValue);
-                    command.Parameters.Add(new SqlParameter("@input_server_id", Context.Guild.Id.ToString()));
-                    command.Parameters.Add(new SqlParameter("@input_channel_type", "Stream"));
+                    using (SqlCommand command = new SqlCommand("GetChannelID", conn))
+                    {
+                        SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(returnValue);
+                        command.Parameters.Add(new SqlParameter("@input_server_id", Context.Guild.Id.ToString()));
+                        command.Parameters.Add(new SqlParameter("@input_channel_type", "Stream"));
 
-                    command.CommandType = CommandType.StoredProcedure;
-                    //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
+                        command.CommandType = CommandType.StoredProcedure;
+                        //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
 
-                    conn.Open();
+                        conn.Open();
 
-                    command.ExecuteNonQuery();
+                        command.ExecuteNonQuery();
 
-                    long result2 = (long)returnValue.Value;
-                    UInt64 result = (UInt64)result2;
+                        long result2 = (long)returnValue.Value;
+                        UInt64 result = (UInt64)result2;
 
-                    var stream_channel = Context.Guild.GetTextChannel(result);
-                    await stream_channel.SendMessageAsync("Posted by " + Context.User.Mention + "\n" + post_string);
-                    return WestbotCommandResult.AcceptReact("postsuccess");
-
+                        var stream_channel = Context.Guild.GetTextChannel(result);
+                        await stream_channel.SendMessageAsync("Posted by " + Context.User.Mention + "\n" + post_string);
+                        return WestbotCommandResult.AcceptReact("postsuccess");
+                    }
                 }
             }
             catch (Exception ex)
@@ -79,33 +81,36 @@ namespace Westbot.Modules
         [Command("capcom")]
         [Remarks("Post a stream to the stream channel.")]
         [MinPermissions(AccessLevel.User)]
-        public async Task<RuntimeResult> capcom([Remainder]string post_string = "")
+        public async Task<RuntimeResult> Capcom([Remainder]string postString = "")
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(MySQLConnString.Get()))
                 {
-                    SqlCommand command = new SqlCommand("GetChannelID", conn);
-                    SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt);
-                    returnValue.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(returnValue);
-                    command.Parameters.Add(new SqlParameter("@serverID", Context.Guild.Id.ToString()));
-                    command.Parameters.Add(new SqlParameter("@target_channel", "Stream"));
+                    using (SqlCommand command = new SqlCommand("GetChannelID", conn))
+                    {
+                        SqlParameter returnValue = new SqlParameter("@result", SqlDbType.BigInt)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(returnValue);
+                        command.Parameters.Add(new SqlParameter("@serverID", Context.Guild.Id.ToString()));
+                        command.Parameters.Add(new SqlParameter("@target_channel", "Stream"));
 
-                    command.CommandType = CommandType.StoredProcedure;
-                    //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
+                        command.CommandType = CommandType.StoredProcedure;
+                        //command.Parameters.Add(new SqlParameter("@ID", (Int64)ID));
 
-                    conn.Open();
+                        conn.Open();
 
-                    command.ExecuteNonQuery();
+                        command.ExecuteNonQuery();
 
-                    long result2 = (long)returnValue.Value;
-                    UInt64 result = (UInt64)result2;
+                        long result2 = (long)returnValue.Value;
+                        UInt64 result = (UInt64)result2;
 
-                    var stream_channel = Context.Guild.GetTextChannel(result);
-                    await stream_channel.SendMessageAsync("Posted by " + Context.User.Mention + "\n" + "https://twitch.tv/capcomfighters");
-                    return WestbotCommandResult.AcceptReact("postsuccess");
-
+                        var stream_channel = Context.Guild.GetTextChannel(result);
+                        await stream_channel.SendMessageAsync("Posted by " + Context.User.Mention + "\n" + "https://twitch.tv/capcomfighters");
+                        return WestbotCommandResult.AcceptReact("postsuccess");
+                    }
                 }
             }
             catch (Exception ex)
@@ -115,6 +120,16 @@ namespace Westbot.Modules
                 await Context.Channel.SendMessageAsync("Exception: " + ex.Message);
                 return WestbotCommandResult.ErrorReact(null, true);
             }
+
+        }
+
+        [Command("newchallengers"), Alias("newchallenger")]
+        [Remarks("Get the discord invite for the new challengers discord.")]
+        [MinPermissions(AccessLevel.User)]
+        public async Task<RuntimeResult> NewChallengers([Remainder]string postString = "")
+        {
+            await Context.Channel.SendMessageAsync("https://discord.com/invite/newchallenger");
+            return WestbotCommandResult.AcceptReact("postsuccess");
 
         }
     }

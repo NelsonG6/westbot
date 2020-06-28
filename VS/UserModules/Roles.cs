@@ -5,12 +5,60 @@ using Discord.Commands;
 using Westbot.Preconditions;
 using Discord;
 using Discord.WebSocket;
+using WestBot;
 
-namespace Westbot.Services
+namespace Westbot.Modules
 {
     [Name("Public role management commands")]
     public class RolesModule : ModuleBase<SocketCommandContext>
     {
+        
+
+
+
+        //Commenting this out, checkin will use the database
+        /*
+        [Command("checkin"), Alias("check in", "register")]
+        [Remarks("Registers you for the tournament")]
+        [MinPermissions(AccessLevel.User)]
+        public async Task<RuntimeResult> CheckIn([Remainder]string roleArgument = "")
+        {
+            //Remove accdiental double spaces someone might have put int.
+
+            ulong roleID = DatabaseHandler.GetRoleIdFromName("In Tournament");
+
+            IRole toAdd = Context.Guild.GetRole(roleID);
+
+            //IRole toAdd = GetRole("Checked In"); //Checks if role exists, gets role if so. wont generate an error
+
+            if (toAdd != null)
+            {
+                if (!DoesUserHaveRole(toAdd, (SocketGuildUser)Context.User) && RoleIsLegal(toAdd))
+                { //Here we know the role matches an existing role, and is not already added.
+                    Console.WriteLine("Adding role: in tournament\nto user.");
+                    await (Context.User as IGuildUser).AddRoleAsync(toAdd);
+                    await ReplyAsync($"You've been added to the tournament, {Context.User.Mention}.");
+                    return WestbotCommandResult.AcceptReact("Role matched in if statement");
+                }
+                else if (DoesUserHaveRole(toAdd, (SocketGuildUser)Context.User))
+                {
+                    Console.WriteLine("User had this role.");
+                    await ReplyAsync($"You're already in the tournament, {Context.User.Mention}.");
+                    return WestbotCommandResult.ErrorReact("Role not found");
+                }
+                else if (!RoleIsLegal(toAdd))
+                {
+                    Console.Write($"`I can't give you `{toAdd}`, {Context.User.Mention}.");
+                    return WestbotCommandResult.ErrorReact("RoleNotLegal");
+                }
+            }
+            return WestbotCommandResult.ErrorReact("Should not reach this");
+        }
+        */
+
+
+
+
         //Commands begin
         /*
         [Command("create"), Alias("makerole", "createrole")]
@@ -203,30 +251,29 @@ namespace Westbot.Services
             return WestbotCommandResult.ErrorReact("Role not found");
         }
 
-        
+        */
 
         //add remove role from user and create role commands eventually
 
-        public IRole GetRole(string role_argument)
+        public IRole GetRole(string roleArgument)
         {
             //Replace multiple spaces (  ) in role_argument with just one space ( ) to help with typos
-            string temp_argument = role_argument;
-            temp_argument = role_argument.Replace("  ", " ");
+            string tempArgument = roleArgument.Replace("  ", " ");
             //If temp_argument is different than role_argument, then spaces were removed.
             //If that is the case, more spaces may need to be removed as well.
             //Loop will be entered.
-            while (temp_argument != role_argument)
+            while (tempArgument != roleArgument)
             {
-                role_argument = temp_argument;
-                temp_argument = role_argument.Replace("  ", " ");
+                roleArgument = tempArgument;
+                tempArgument = roleArgument.Replace("  ", " ");
             }
 
-            foreach (IRole temp_role in Context.Guild.Roles.ToArray())
+            foreach (IRole tempRole in Context.Guild.Roles.ToArray())
             { //check if the role exists
-                if (role_argument.ToLower() == temp_role.ToString().ToLower())
-                    return temp_role;
+                if (roleArgument.ToLower() == tempRole.ToString().ToLower())
+                    return tempRole;
             }
-            Console.WriteLine("Returning NULL from GetRole() for role " + role_argument);
+            Console.WriteLine("Returning NULL from GetRole() for role " + roleArgument);
             return null; //nothing found
         }
 
@@ -246,6 +293,5 @@ namespace Westbot.Services
                 return false;
             return true;
         }
-        */
     }
 }
